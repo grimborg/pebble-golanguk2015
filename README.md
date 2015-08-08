@@ -8,6 +8,5 @@ Install it from the [Pebble AppStore](http://apps.getpebble.com/en_US/applicatio
 ![](http://i.imgur.com/t4bF1IB.png)
 ![](http://i.imgur.com/LLkcE6d.png)
 ![](http://i.imgur.com/IVVLMih.png)
-![](http://i.imgur.com/AQaXYqJ.png)
-![](http://i.imgur.com/jxtFNZD.png)
+![](http://i.imgur.com/wG3hsSM.png)
 
