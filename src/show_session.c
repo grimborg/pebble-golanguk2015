@@ -17,6 +17,9 @@ Session *current_session;
 #define ROOM_COLOR GColorBabyBlueEyes
 #define BOTTOM_BAR_COLOR GColorLiberty
 #else
+#define TIME_COLOR GColorWhite
+#define ROOM_COLOR GColorWhite
+#define BOTTOM_BAR_COLOR GColorBlack
 #define PRESENTER_COLOR GColorBlack
 #endif
 
@@ -75,13 +78,11 @@ static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_SELECT, select_single_click_handler);
 }
 
-#ifdef PBL_COLOR
 static void update_layer_bottom_bar(Layer *layer, GContext *ctx) {
     GRect bounds = layer_get_bounds(layer);
     graphics_context_set_fill_color(ctx, BOTTOM_BAR_COLOR);
     graphics_fill_rect(ctx, bounds, 0, GCornerNone);
 }
-#endif
 
 void init_session_window() {
     wnd_session = window_create();
@@ -89,7 +90,11 @@ void init_session_window() {
     layer_session_presenter = text_layer_create((GRect(2, 0, 140, 30)));
     text_layer_set_background_color((layer_session_presenter), GColorClear);
     text_layer_set_text_color((layer_session_presenter), PRESENTER_COLOR);
+#ifdef PBL_COLOR
     text_layer_set_font(layer_session_presenter, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+#else
+    text_layer_set_font(layer_session_presenter, fonts_get_system_font(FONT_KEY_GOTHIC_24));
+#endif
     text_layer_set_text_alignment(layer_session_presenter, GTextAlignmentLeft);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_presenter));
 
@@ -100,11 +105,11 @@ void init_session_window() {
     text_layer_set_text_alignment(layer_session_title, GTextAlignmentLeft);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_title));
 
+layer_bottom_bar = layer_create(GRect(0, 105, 144, 63));
+layer_set_update_proc(layer_bottom_bar, update_layer_bottom_bar);
+layer_add_child(window_get_root_layer(wnd_session), layer_bottom_bar);
 #ifdef PBL_COLOR
-    layer_bottom_bar = layer_create(GRect(0, 105, 144, 63));
-    layer_set_update_proc(layer_bottom_bar, update_layer_bottom_bar);
     layer_session_start = text_layer_create((GRect(2, 120, 134, 30)));
-    layer_add_child(window_get_root_layer(wnd_session), layer_bottom_bar);
     text_layer_set_background_color((layer_session_start), GColorClear);
     text_layer_set_text_color((layer_session_start), TIME_COLOR);
     text_layer_set_font(layer_session_start, fonts_get_system_font(FONT_KEY_LECO_26_BOLD_NUMBERS_AM_PM));
@@ -118,18 +123,17 @@ void init_session_window() {
     text_layer_set_text_alignment(layer_session_room, GTextAlignmentLeft);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_room));
 #else
-    layer_bottom_bar = NULL;
-    layer_session_start = text_layer_create((GRect(10, 130, 130, 20)));
+    layer_session_start = text_layer_create((GRect(10, 110, 124, 30)));
     text_layer_set_background_color((layer_session_start), GColorClear);
-    text_layer_set_text_color((layer_session_start), GColorBlack);
-    text_layer_set_font(layer_session_start, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+    text_layer_set_text_color((layer_session_start), TIME_COLOR);
+    text_layer_set_font(layer_session_start, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
     text_layer_set_text_alignment(layer_session_start, GTextAlignmentRight);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_start));
 
-    layer_session_room = text_layer_create((GRect(2, 130, 140, 20)));
+    layer_session_room = text_layer_create((GRect(10, 110, 124, 30)));
     text_layer_set_background_color((layer_session_room), GColorClear);
-    text_layer_set_text_color((layer_session_room), GColorBlack);
-    text_layer_set_font(layer_session_room, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+    text_layer_set_text_color((layer_session_room), ROOM_COLOR);
+    text_layer_set_font(layer_session_room, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
     text_layer_set_text_alignment(layer_session_room, GTextAlignmentLeft);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_room));
 #endif
