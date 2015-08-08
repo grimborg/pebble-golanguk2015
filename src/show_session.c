@@ -2,6 +2,7 @@
 #include "schedule.h"
 
 Window *wnd_session;
+Layer *layer_bottom_bar;
 TextLayer *layer_session_title;
 TextLayer *layer_session_presenter;
 TextLayer *layer_session_room;
@@ -11,12 +12,19 @@ Session *current_session;
 #define REPEAT_INTERVAL_MS 1000
 
 #ifdef PBL_COLOR
-#define PRESENTER_COLOR GColorDukeBlue
+#define PRESENTER_COLOR GColorLiberty
+#define TIME_COLOR GColorWhite
+#define ROOM_COLOR GColorBabyBlueEyes
+#define BOTTOM_BAR_COLOR GColorLiberty
 #else
 #define PRESENTER_COLOR GColorBlack
 #endif
 
-static char *room_names[5] = {"", "Room 1", "Room 2"};
+#ifdef PBL_COLOR
+static char *room_names[3] = {"", "1", "2"};
+#else
+static char *room_names[3] = {"", "Room 1", "Room 2"};
+#endif
 
 static void update_text_layers() {
     text_layer_set_text(layer_session_title, current_session->title);
@@ -37,6 +45,9 @@ void deinit_session_window() {
     text_layer_destroy(layer_session_presenter);
     text_layer_destroy(layer_session_room);
     text_layer_destroy(layer_session_start);
+    if (layer_bottom_bar) {
+        layer_destroy(layer_bottom_bar);
+    }
     window_destroy(wnd_session);
 }
 
@@ -64,13 +75,21 @@ static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_SELECT, select_single_click_handler);
 }
 
+#ifdef PBL_COLOR
+static void update_layer_bottom_bar(Layer *layer, GContext *ctx) {
+    GRect bounds = layer_get_bounds(layer);
+    graphics_context_set_fill_color(ctx, BOTTOM_BAR_COLOR);
+    graphics_fill_rect(ctx, bounds, 0, GCornerNone);
+}
+#endif
+
 void init_session_window() {
     wnd_session = window_create();
 
     layer_session_presenter = text_layer_create((GRect(2, 0, 140, 30)));
     text_layer_set_background_color((layer_session_presenter), GColorClear);
     text_layer_set_text_color((layer_session_presenter), PRESENTER_COLOR);
-    text_layer_set_font(layer_session_presenter, fonts_get_system_font(FONT_KEY_GOTHIC_24));
+    text_layer_set_font(layer_session_presenter, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
     text_layer_set_text_alignment(layer_session_presenter, GTextAlignmentLeft);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_presenter));
 
@@ -81,20 +100,39 @@ void init_session_window() {
     text_layer_set_text_alignment(layer_session_title, GTextAlignmentLeft);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_title));
 
-    layer_session_start = text_layer_create((GRect(2, 130, 140, 20)));
+#ifdef PBL_COLOR
+    layer_bottom_bar = layer_create(GRect(0, 105, 144, 63));
+    layer_set_update_proc(layer_bottom_bar, update_layer_bottom_bar);
+    layer_session_start = text_layer_create((GRect(2, 120, 134, 30)));
+    layer_add_child(window_get_root_layer(wnd_session), layer_bottom_bar);
+    text_layer_set_background_color((layer_session_start), GColorClear);
+    text_layer_set_text_color((layer_session_start), TIME_COLOR);
+    text_layer_set_font(layer_session_start, fonts_get_system_font(FONT_KEY_LECO_26_BOLD_NUMBERS_AM_PM));
+    text_layer_set_text_alignment(layer_session_start, GTextAlignmentRight);
+    layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_start));
+
+    layer_session_room = text_layer_create((GRect(10, 120, 134, 30)));
+    text_layer_set_background_color((layer_session_room), GColorClear);
+    text_layer_set_text_color((layer_session_room), ROOM_COLOR);
+    text_layer_set_font(layer_session_room, fonts_get_system_font(FONT_KEY_LECO_26_BOLD_NUMBERS_AM_PM));
+    text_layer_set_text_alignment(layer_session_room, GTextAlignmentLeft);
+    layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_room));
+#else
+    layer_bottom_bar = NULL;
+    layer_session_start = text_layer_create((GRect(10, 130, 130, 20)));
     text_layer_set_background_color((layer_session_start), GColorClear);
     text_layer_set_text_color((layer_session_start), GColorBlack);
-    text_layer_set_font(layer_session_start, fonts_get_system_font(FONT_KEY_GOTHIC_14));
+    text_layer_set_font(layer_session_start, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
     text_layer_set_text_alignment(layer_session_start, GTextAlignmentRight);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_start));
 
     layer_session_room = text_layer_create((GRect(2, 130, 140, 20)));
     text_layer_set_background_color((layer_session_room), GColorClear);
     text_layer_set_text_color((layer_session_room), GColorBlack);
-    text_layer_set_font(layer_session_room, fonts_get_system_font(FONT_KEY_GOTHIC_14));
+    text_layer_set_font(layer_session_room, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
     text_layer_set_text_alignment(layer_session_room, GTextAlignmentLeft);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_room));
-
+#endif
     window_set_click_config_provider(wnd_session, click_config_provider);
 }
 
