@@ -1,0 +1,25 @@
+{
+  "uuid": "2d3c09fd-23ad-4a14-91be-8ff392cffae0",
+  "shortName": "GolangUK",
+  "longName": "GolangUK 2015",
+  "companyName": "Mechanical Ninja",
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt"],
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": [
+      {
+        "menuIcon": true,
+        "type": "png",
+        "name": "IMAGE_MENU_ICON",
+        "file": "images/icon.png"
+      }
+    ]
+  }
+}
