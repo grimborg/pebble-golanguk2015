@@ -86,7 +86,9 @@ static void update_layer_bottom_bar(Layer *layer, GContext *ctx) {
 
 void init_session_window() {
     wnd_session = window_create();
-
+#ifndef PBL_COLOR
+    window_set_fullscreen(wnd_session, true);
+#endif
     layer_session_presenter = text_layer_create((GRect(2, 0, 140, 30)));
     text_layer_set_background_color((layer_session_presenter), GColorClear);
     text_layer_set_text_color((layer_session_presenter), PRESENTER_COLOR);
@@ -123,14 +125,14 @@ layer_add_child(window_get_root_layer(wnd_session), layer_bottom_bar);
     text_layer_set_text_alignment(layer_session_room, GTextAlignmentLeft);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_room));
 #else
-    layer_session_start = text_layer_create((GRect(10, 110, 124, 30)));
+    layer_session_start = text_layer_create((GRect(10, 120, 124, 30)));
     text_layer_set_background_color((layer_session_start), GColorClear);
     text_layer_set_text_color((layer_session_start), TIME_COLOR);
     text_layer_set_font(layer_session_start, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
     text_layer_set_text_alignment(layer_session_start, GTextAlignmentRight);
     layer_add_child(window_get_root_layer(wnd_session), text_layer_get_layer(layer_session_start));
 
-    layer_session_room = text_layer_create((GRect(10, 110, 124, 30)));
+    layer_session_room = text_layer_create((GRect(10, 120, 124, 30)));
     text_layer_set_background_color((layer_session_room), GColorClear);
     text_layer_set_text_color((layer_session_room), ROOM_COLOR);
     text_layer_set_font(layer_session_room, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));

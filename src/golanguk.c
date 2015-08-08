@@ -172,6 +172,9 @@ static void init() {
   init_session_window();
   init_schedule();
   wnd_schedule = window_create();
+#ifndef PBL_COLOR
+  window_set_fullscreen(wnd_schedule, true);
+#endif
   window_set_window_handlers(wnd_schedule, (WindowHandlers) {
     .load = main_window_load,
     .unload = main_window_unload,
